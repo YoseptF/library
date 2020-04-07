@@ -1,23 +1,4 @@
-let myLibrary = [
-  {
-    title: "title5",
-    author: "author5",
-    pages: 200,
-    status: false,
-  },
-  {
-    title: "title6",
-    author: "author6",
-    pages: 250,
-    status: true,
-  },
-  {
-    title: "title7",
-    author: "author7",
-    pages: 50,
-    status: false,
-  },
-];
+let myLibrary = [];
 
 function Book(title, author, pages, status) {
   this.title = title;
@@ -45,15 +26,42 @@ function addBooksToDOM(book, id) {
   document.getElementById("books").innerHTML += htmlBook;
 }
 
-let book1 = new Book("title1", "author1", 100, true);
-let book2 = new Book("title2", "author2", 100, true);
-let book3 = new Book("title3", "author3", 100, true);
-let book4 = new Book("title4", "author4", 100, true);
-
-myLibrary.push(book1, book2, book3, book4);
-
 window.onload = (event) => {
   for (book of myLibrary) {
     addBooksToDOM(book, myLibrary.indexOf(book));
   }
 };
+
+document.querySelector('#searchBook').addEventListener('submit', submitForm);
+document.querySelector("#books").addEventListener('click', (e) => deleteBook(e.target));
+
+function submitForm(e) {
+  e.preventDefault();
+  let title = document.querySelector('#title').value
+  let author = document.querySelector('#author').value
+  let pages = document.querySelector('#pages').value
+  let status = document.querySelector('#status').checked
+
+  if (!title || !author || !pages) {
+    alert('Please fill in the form');
+    return false;
+  }
+  
+  let book = new Book(title, author, pages, status);
+  addBookToLibrary(book);
+  addBooksToDOM(book, myLibrary.indexOf(book));
+}
+
+
+function deleteBook(e) {
+  if (e.classList.contains('btn-danger')) {
+    let book = e.parentElement;
+    let id = book.getAttribute('data-id');
+    book.remove();
+    for (let i = 0; i < myLibrary.length; i++) {
+      if (i = id) {
+        myLibrary.splice(i,1);
+      }
+    }
+  }
+}
