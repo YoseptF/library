@@ -39,7 +39,7 @@ window.onload = () => {
   } else {
     myLibrary = JSON.parse(localStorage.getItem('books'));
     for (const book of myLibrary) {
-      addBooksToDOM(book, myLibrary.indexOf(book));
+      addBooksToDOM(book);
     }
   }
 };
@@ -74,8 +74,18 @@ function deleteBook(e) {
         myLibrary.splice(i, 1);
       }
     }
-    localStorage.setItem('books', JSON.stringify(myLibrary));
+    deleteLocalStorage(id);
   }
+}
+
+function deleteLocalStorage(id) {
+  let books = JSON.parse(localStorage.getItem('books'))
+  books.forEach((book, index) => {
+    if (book.id === id) {
+      books.splice(index, 1)
+    }
+  })
+  localStorage.setItem('books', JSON.stringify(books));
 }
 
 function toogleBook(e) {
@@ -86,7 +96,10 @@ function toogleBook(e) {
       .innerHTML;
     document.querySelector(`div[data-id='${id}'] > #status`).innerHTML = actualStatus === 'read' ? 'un-read' : 'read';
     for (const elem of myLibrary) {
-      if (elem.id === id) elem.toggleRead();
+      if (elem.id === id) {
+        elem.prototype = Object.create(Book.prototype);
+        elem.prototype.toggleRead();
+      };
     }
     localStorage.setItem('books', JSON.stringify(myLibrary));
   }
