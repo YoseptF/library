@@ -1,3 +1,5 @@
+import { updateError, addBooksToDOM } from "./dom.js"; // eslint-disable-line
+
 let myLibrary = [];
 
 function Book(title, author, pages, status) {
@@ -8,7 +10,7 @@ function Book(title, author, pages, status) {
   this.status = status;
 }
 
-Book.prototype.toggleRead = function () {
+Book.prototype.toggleRead = () => {
   this.status = !this.status;
 };
 
@@ -16,34 +18,16 @@ function addBookToLibrary(book) {
   myLibrary.push(book);
 }
 
-function addBooksToDOM(book) {
-  const htmlBook = `
-  <div class="card-body card mb-3 col-4 mx-auto text-center" data-id="${
-  book.id
-}">
-    <h2 id="bookTitle">${book.title}</h2>
-    <div id="pages">${book.author}</div>
-    <div id="pages">${book.pages}</div>
-    <div id="status">${book.status ? 'read' : 'un-read'}</div>
-    <button class="btn btn-primary btn-block">Read</button>
-    <button class="btn btn-danger btn-block">Delete</button>
-  </div>
-`;
-
-  document.getElementById('books').innerHTML += htmlBook;
-}
-
 window.onload = () => {
   if (localStorage.getItem('books') === null) {
     localStorage.setItem('books', JSON.stringify(myLibrary));
   } else {
     myLibrary = JSON.parse(localStorage.getItem('books'));
-    for (const book of myLibrary) {
+    myLibrary.forEach((book) => {
       addBooksToDOM(book);
-    }
+    });
   }
 };
-
 
 function submitForm(e) {
   e.preventDefault();
@@ -53,7 +37,7 @@ function submitForm(e) {
   const status = document.querySelector('#status').checked;
 
   if (!title || !author || !pages) {
-    alert('Please fill in the form');
+    updateError();
     return false;
   }
 
@@ -62,6 +46,17 @@ function submitForm(e) {
   addBooksToDOM(book);
   localStorage.setItem('books', JSON.stringify(myLibrary));
   document.getElementById('searchBook').reset();
+  return true;
+}
+
+function deleteLocalStorage(id) {
+  const books = JSON.parse(localStorage.getItem('books'));
+  books.forEach((book, index) => {
+    if (book.id === id) {
+      books.splice(index, 1);
+    }
+  });
+  localStorage.setItem('books', JSON.stringify(books));
 }
 
 function deleteBook(e) {
@@ -69,7 +64,7 @@ function deleteBook(e) {
     const book = e.parentElement;
     const id = book.getAttribute('data-id');
     book.remove();
-    for (let i = 0; i < myLibrary.length; i++) {
+    for (let i = 0; i < myLibrary.length; i += 1) {
       if (i === id) {
         myLibrary.splice(i, 1);
       }
@@ -78,33 +73,31 @@ function deleteBook(e) {
   }
 }
 
-function deleteLocalStorage(id) {
-  let books = JSON.parse(localStorage.getItem('books'))
-  books.forEach((book, index) => {
-    if (book.id === id) {
-      books.splice(index, 1)
-    }
-  })
-  localStorage.setItem('books', JSON.stringify(books));
-}
-
 function toogleBook(e) {
   if (e.classList.contains('btn-primary')) {
     const book = e.parentElement;
     const id = book.getAttribute('data-id');
-    const actualStatus = document.querySelector(`div[data-id='${id}'] > #status`)
-      .innerHTML;
+    const actualStatus = document.querySelector(
+      `div[data-id='${id}'] > #status`,
+    ).innerHTML;
     document.querySelector(`div[data-id='${id}'] > #status`).innerHTML = actualStatus === 'read' ? 'un-read' : 'read';
-    for (const elem of myLibrary) {
-      if (elem.id === id) {
-        elem.prototype = Object.create(Book.prototype);
-        elem.prototype.toggleRead();
-      };
+    const books = JSON.parse(localStorage.getItem('books'));
+
+    for (let i = 0; i < myLibrary.length; i += 1) {
+      if (myLibrary[i].id === id) {
+        myLibrary[i].prototype = Object.create(Book.prototype);
+        myLibrary[i].prototype.toggleRead();
+        books[i].status = !books[i].status;
+        localStorage.setItem('books', JSON.stringify(books));
+      }
     }
-    localStorage.setItem('books', JSON.stringify(myLibrary));
   }
 }
 
 document.querySelector('#searchBook').addEventListener('submit', submitForm);
-document.querySelector('#books').addEventListener('click', (e) => deleteBook(e.target));
-document.querySelector('#books').addEventListener('click', (e) => toogleBook(e.target));
+document
+  .querySelector('#books')
+  .addEventListener('click', (e) => deleteBook(e.target));
+document
+  .querySelector('#books')
+  .addEventListener('click', (e) => toogleBook(e.target));

@@ -12,6 +12,7 @@
     <h1 class="text-center">Library</h1>
     <div class="row">
       <div class="col-5 mx-auto">
+        <div id="errors" class="bg-info text-light"></div>
         <form class="text-center" id="searchBook">
           <label for="title">Title</label>
           <input class="form-control mb-3" type="text" name="book[title]" id="title">
@@ -28,6 +29,7 @@
     <div id="books"></div>
     
   </div>
-  <script src="./js/script.js"></script>
+  <script type="module" src="./js/dom.js"></script>
+  <script type="module" src="./js/script.js"></script>
 </body>
 </html>
