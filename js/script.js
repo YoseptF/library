@@ -34,8 +34,14 @@ function addBooksToDOM(book) {
 }
 
 window.onload = (event) => {
-  for (book of myLibrary) {
-    addBooksToDOM(book, myLibrary.indexOf(book));
+  
+  if (localStorage.getItem('books') === null) {
+    localStorage.setItem('books', JSON.stringify(myLibrary));
+  } else {
+    myLibrary = JSON.parse(localStorage.getItem('books'))
+    for (book of myLibrary) {
+      addBooksToDOM(book, myLibrary.indexOf(book));
+    }
   }
 };
 
@@ -63,6 +69,7 @@ function submitForm(e) {
   addBookToLibrary(book);
   addBooksToDOM(book);
   console.log(myLibrary);
+  localStorage.setItem('books', JSON.stringify(myLibrary));
   document.getElementById("searchBook").reset();
 }
 
@@ -76,6 +83,7 @@ function deleteBook(e) {
         myLibrary.splice(i, 1);
       }
     }
+    localStorage.setItem('books', JSON.stringify(myLibrary));
   }
 }
 
@@ -90,6 +98,7 @@ function toogleBook(e) {
     for (elem of myLibrary) {
       if (elem.id == id) elem.toggleRead();
     }
+    localStorage.setItem('books', JSON.stringify(myLibrary));
     console.log(myLibrary);
   }
 }
