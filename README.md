@@ -14,15 +14,23 @@ In this project we made a webapp where you can add a list of the books you've re
 ```
 $ git clone git@github.com:YoseptF/library.git
 ``` 
+2. cd into the correct branch
+```
+$ cd [your desired branch]
+``` 
 2. install the dependencies
 ```
 $ npm install || yarn install
 ```
-3. Run the index.html file (We recomend using [Live server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) if you're already using vscode)
+3. start the project
+```
+$ npm start
+```
 
 4. Open your localhost
+It will automatically open a browser tab, but if for some reason it doesn't, you can go to
 ```
-localhost:5500 || 127.0.0.1:5500
+http://localhost:3000/
 ``` 
 
 ---
