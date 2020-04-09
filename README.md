@@ -14,6 +14,10 @@ In this project we made a webapp where you can add a list of the books you've re
 ```
 $ git clone git@github.com:YoseptF/library.git
 ``` 
+or
+```
+$ git clone https://github.com/YoseptF/library.git
+``` 
 2. cd into the correct branch
 ```
 $ cd [your desired branch]
