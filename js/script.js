@@ -3,7 +3,7 @@ import { updateError, addBooksToDOM } from "./dom.js"; // eslint-disable-line
 let myLibrary = [];
 
 function Book(title, author, pages, status) {
-  this.id = title.concat(author).concat(Math.floor(Math.random() * 99) + 1);
+  this.id = title.concat(author).concat(1);
   this.title = title;
   this.author = author;
   this.pages = pages;
@@ -22,10 +22,13 @@ window.onload = () => {
   if (localStorage.getItem('books') === null) {
     localStorage.setItem('books', JSON.stringify(myLibrary));
   } else {
-    myLibrary = JSON.parse(localStorage.getItem('books'));
-    myLibrary.forEach((book) => {
-      addBooksToDOM(book);
+    let booksFromLocal = JSON.parse(localStorage.getItem('books'));
+    booksFromLocal.forEach((book) => {
+      let bookN = new Book(book.title, book.author, book.pages, book.status);
+      addBooksToDOM(bookN);
+      myLibrary.push(bookN);
     });
+    
   }
 };
 
@@ -47,6 +50,7 @@ function submitForm(e) {
   addBooksToDOM(book);
   localStorage.setItem('books', JSON.stringify(myLibrary));
   document.getElementById('searchBook').reset();
+  
   return true;
 }
 
@@ -83,8 +87,9 @@ function toogleBook(e) {
     ).innerHTML;
     document.querySelector(`div[data-id='${id}'] > #status`).innerHTML = actualStatus === 'read' ? 'un-read' : 'read';
     const books = JSON.parse(localStorage.getItem('books'));
-
+    
     for (let i = 0; i < myLibrary.length; i += 1) {
+      
       if (myLibrary[i].id === id) {
         myLibrary[i].toggleRead(myLibrary[i]);
         books[i].status = !books[i].status;
